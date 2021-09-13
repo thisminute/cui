@@ -1,4 +1,7 @@
-use {data::semantics::properties::Properties, std::collections::HashMap};
+use {
+	data::{ast::Value, semantics::properties::Properties},
+	std::collections::HashMap,
+};
 
 #[derive(Clone)]
 pub struct Group {
@@ -6,6 +9,7 @@ pub struct Group {
 	pub selector: Option<String>,
 	pub class_names: Vec<String>,
 	pub listener_scope: Option<usize>,
+	pub variables: HashMap<String, Value>,
 
 	pub properties: Properties,
 	pub elements: Vec<usize>,
@@ -18,12 +22,17 @@ pub struct Group {
 	pub tag: &'static str,
 }
 impl Group {
-	pub fn new(name: Option<String>, listener_scope: Option<usize>) -> Self {
+	pub fn new(
+		name: Option<String>,
+		listener_scope: Option<usize>,
+		variables: HashMap<String, Value>,
+	) -> Self {
 		Self {
 			name,
 			selector: None,
 			class_names: Vec::new(),
 			listener_scope,
+			variables,
 
 			properties: Properties::default(),
 			elements: Vec::new(),
@@ -48,6 +57,7 @@ impl Group {
 			selector: None,
 			class_names: Vec::new(),
 			listener_scope: None,
+			variables: HashMap::new(),
 
 			properties: Properties {
 				cui: self.properties.cui.clone(),

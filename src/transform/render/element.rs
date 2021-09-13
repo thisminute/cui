@@ -65,6 +65,13 @@ impl Semantics {
 			self.groups[element_id].class_names.push(selector);
 		}
 
+		self.groups[element_id].variables = self.groups[element_id]
+			.variables
+			.clone()
+			.into_iter()
+			.map(|(identifier, value)| (identifier, self.render_value(value, ancestors)))
+			.collect();
+
 		ancestors.push(element_id);
 		for element_id in self.groups[element_id].elements.clone() {
 			self.render_element(element_id, ancestors);

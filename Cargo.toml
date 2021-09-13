@@ -11,6 +11,7 @@ proc-macro = true
 
 [dependencies]
 log = "0.4"
+phf = {version = "0.9", features = ["macros"]}
 proc-macro2 = {version = "1.0", features = ["nightly"]}
 quote = "1.0"
 simple_logger = "1.11"

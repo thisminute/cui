@@ -16,9 +16,22 @@ pub enum Prefix {
 	Listener,
 }
 
-#[derive(Clone)]
+pub struct Block {
+	pub prefix: Prefix,
+	pub identifier: Ident,
+	pub properties: Vec<Property>,
+	pub elements: Vec<Block>,
+	pub classes: Vec<Block>,
+	pub listeners: Vec<Block>,
+	pub variables: HashMap<String, Value>,
+}
+
+#[derive(Hash, PartialEq, Eq, Debug, Clone)]
+pub struct Variable(pub Ident);
+
+#[derive(Clone, Debug)]
 pub enum Value {
-	Number(u32),
+	Number(i32),
 	String(String),
 	Variable(Variable),
 }
@@ -43,16 +56,6 @@ impl ToTokens for Value {
 	}
 }
 
-pub struct Block {
-	pub prefix: Prefix,
-	pub identifier: Ident,
-	pub properties: Vec<Property>,
-	pub elements: Vec<Block>,
-	pub classes: Vec<Block>,
-	pub listeners: Vec<Block>,
-	pub variables: HashMap<Variable, Value>,
-}
-
 pub struct Property {
 	pub property: Ident,
 	pub value: Value,
@@ -62,6 +65,3 @@ pub struct Assignment {
 	pub variable: Variable,
 	pub value: Value,
 }
-
-#[derive(Hash, PartialEq, Eq, Debug, Clone)]
-pub struct Variable(pub Ident);

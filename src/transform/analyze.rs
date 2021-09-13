@@ -1,5 +1,5 @@
 use data::{
-	ast::{Block, Document, Prefix, Property, Value},
+	ast::{Block, Document, Prefix, Value},
 	semantics::{
 		properties::{is_css_property, CuiProperty},
 		Group, Page, Semantics,
@@ -50,7 +50,7 @@ impl Semantics {
 		let group_id = self.groups.len();
 		let group = if let Some(parent_id) = parent_id {
 			let parent = &mut self.groups[parent_id];
-			let group = Group::new(Some(identifier.clone()), listener_scope);
+			let group = Group::new(Some(identifier.clone()), listener_scope, block.variables);
 			match block.prefix {
 				Prefix::Element => {
 					parent.elements.push(group_id);
@@ -69,7 +69,7 @@ impl Semantics {
 			}
 			group
 		} else {
-			let group = Group::new(None, None);
+			let group = Group::new(None, None, block.variables);
 			page_id = Some(self.pages.len());
 			self.pages.push(Page {
 				title: String::from(""),
@@ -81,7 +81,22 @@ impl Semantics {
 		self.groups.push(group);
 
 		for property in block.properties {
-			self.apply_static_property(property, group_id);
+			let group = &mut self.groups[group_id];
+			let properties = &mut group.properties;
+			let (property, value) = (property.property.to_string(), property.value);
+			log::debug!(
+				" Applying property {}:{:?} to group {}",
+				property,
+				value,
+				group_id
+			);
+			if is_css_property(&property) {
+				properties.css.insert(property, value);
+			} else {
+				properties.cui.insert(CuiProperty(property), value);
+			}
+			// page properties
+			// "title" => properties.page.insert(PageProperty::Title, value),
 		}
 
 		for block in block.listeners {
@@ -93,26 +108,5 @@ impl Semantics {
 		for block in block.elements {
 			self.create_group_from_block(block, page_id, Some(group_id), listener_scope);
 		}
-	}
-
-	fn apply_static_property(&mut self, property: Property, group_id: usize) {
-		let group = &mut self.groups[group_id];
-		let properties = &mut group.properties;
-		let (property, value) = (property.property.to_string(), property.value);
-		log::debug!(
-			" Applying property {}:{} to group {}",
-			property,
-			value,
-			group_id
-		);
-
-		if is_css_property(&property) {
-			properties.css.insert(property, value);
-		} else {
-			properties.cui.insert(CuiProperty(property), value);
-		}
-
-		// page properties
-		// "title" => properties.page.insert(PageProperty::Title, value),
 	}
 }

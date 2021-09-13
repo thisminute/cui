@@ -8,7 +8,7 @@ mod classes {
 	mod parallel_nesting;
 }
 mod data {
-	// mod r#static;
+	mod r#static;
 }
 mod misc {
 	mod basics;

@@ -1,4 +1,5 @@
 extern crate log;
+extern crate phf;
 extern crate proc_macro;
 extern crate proc_macro2;
 extern crate quote;
@@ -51,8 +52,8 @@ pub fn cui(input: TokenStream) -> TokenStream {
 
 	let input = input.into();
 	let (html, runtime) = pipeline(parse_macro_input!(input as Document));
-	let destination = format!("target/html/index.html");
-	write(&destination, html).expect(&*format!("writing output html code to {}", destination));
+	let destination = &format!("target/html/index.html");
+	write(destination, html).expect(&*format!("writing output html code to {}", destination));
 	write("target/cui_macro_output.rs", runtime.to_string()).expect("writing output rust code");
 
 	runtime.into()
@@ -67,7 +68,7 @@ pub fn test_setup(input: TokenStream) -> TokenStream {
 	semantics.render();
 
 	let (pages, styles) = semantics.html_parts();
-	let content = pages.get(&String::from("/")).unwrap();
+	let content = pages.get("/").unwrap();
 
 	let wasm = semantics.wasm(false);
 	let wasm = quote! {

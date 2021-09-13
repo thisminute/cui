@@ -1,4 +1,6 @@
-pub static CSS_PROPERTIES: &'static [&'static str] = &[
+use phf::phf_set;
+
+pub static CSS_PROPERTIES: phf::Set<&'static str> = phf_set! {
 	"all",
 	"azimuth",
 	"background",
@@ -85,7 +87,6 @@ pub static CSS_PROPERTIES: &'static [&'static str] = &[
 	"min-width",
 	"orphans",
 	"outline",
-	"outline",
 	"outline-color",
 	"outline-offset",
 	"outline-style",
@@ -135,4 +136,4 @@ pub static CSS_PROPERTIES: &'static [&'static str] = &[
 	"word-spacing",
 	"writing-mode",
 	"z-index",
-];
+};

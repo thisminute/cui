@@ -8,7 +8,7 @@ impl Semantics {
 	pub fn html(&self) -> (String, HashMap<String, String>) {
 		log::debug!("...Writing HTML...");
 		let (contents, styles) = self.html_parts();
-		let homepage = contents.get(&String::from("/")).unwrap();
+		let homepage = contents.get("/").unwrap();
 		let root = &self.pages[self.pages[0].root_id];
 		(
 			format!(
@@ -46,7 +46,7 @@ impl Semantics {
 impl Group {
 	fn html(&self, groups: &Vec<Group>) -> String {
 		let link = match self.properties.cui.get(&CuiProperty("link".to_string())) {
-			Some(value) => value.to_string(),
+			Some(value) => self.get_string(value.clone()),
 			None => "".to_string(),
 		};
 		let attributes = [
@@ -71,7 +71,7 @@ impl Group {
 		let contents = format!(
 			"{}{}",
 			match self.properties.cui.get(&CuiProperty("text".to_string())) {
-				Some(value) => value.to_string(),
+				Some(value) => self.get_string(value.clone()),
 				None => "".to_string(),
 			},
 			children

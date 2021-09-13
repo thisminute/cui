@@ -47,7 +47,7 @@ fn parse_content(
 			let assignment = input.parse::<Assignment>()?;
 			block
 				.variables
-				.insert(assignment.variable, assignment.value);
+				.insert(assignment.variable.0.to_string(), assignment.value);
 		} else {
 			break;
 		}
@@ -115,7 +115,7 @@ impl Parse for Value {
 		} else if input.peek(LitStr) {
 			Self::String(input.parse::<LitStr>()?.value())
 		} else {
-			Self::Number(input.parse::<LitInt>()?.base10_parse::<u32>()?)
+			Self::Number(input.parse::<LitInt>()?.base10_parse::<i32>()?)
 		})
 	}
 }
